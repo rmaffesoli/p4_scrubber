@@ -1,0 +1,1 @@
+pyinstaller --onefile --distpath .\bin -n "p4_scrubber" .\p4_scrubber.py
