@@ -3,6 +3,14 @@
 from __future__ import print_function
 
 
+def validate_client(server, client_name):
+    existing_clients = {_['Client'] for _ in server.iterate_clients()}
+    print(existing_clients)
+    if client_name not in existing_clients:
+        print("Client {} not found \n".format(client_name))
+        return False
+    return True
+
 def find_clients_by_user(server, user):
     client_names = {_['client'] for _ in server.run('clients', '-u', user)}
     return client_names

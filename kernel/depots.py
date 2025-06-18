@@ -19,24 +19,16 @@
 from __future__ import print_function
 
 
-def find_depot(
-    server, depot_name=None, dryrun=0
-):
+def validate_depot(server, depot_name):
     """find_depot doc string"""
 
     existing_depot_names = {_["Depot"] for _ in server.iterate_depots()}
 
     if depot_name not in existing_depot_names:
         print("Depot {} not found \n".format(depot_name))
-        return
+        return False
+    return True
 
-    depot_spec = server.fetch_depot(depot_name)
-
-    if dryrun:
-        print("-" * 20, "\n")
-        print(depot_spec, "\n")
-        print("-" * 20, "\n")
-    return depot_spec
 
 
 def delete_depot(

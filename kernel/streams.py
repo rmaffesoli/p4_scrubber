@@ -20,11 +20,16 @@
 
 from __future__ import print_function
 
+def validate_stream(server, stream_name):
+    existing_stream_names = {_['Stream'] for _ in server.iterate_streams()}
+    if stream_name not in existing_stream_names:
+        print("Stream {} not found \n".format(stream_name))
+        return False
+    return True
 
 def find_streams_from_depot(
     server,
     depot_name=None,
-    dryrun=0,
 ):
     """create_stream doc string"""
 

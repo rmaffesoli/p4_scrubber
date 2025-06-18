@@ -2,6 +2,14 @@
 
 from __future__ import print_function
 
+def validate_permission(
+    protections_list,
+    protection    
+):
+    if protection not in protections_list:
+        print("protection {} does not exist in table\n".format(protection))
+        return False
+    return True
 
 def find_permissions_by_depot(
     protections_list,

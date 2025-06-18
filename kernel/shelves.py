@@ -3,6 +3,14 @@
 from __future__ import print_function
 
 
+def validate_shelve(server, cl_number):
+    shelved_client_results = server.run('changes', '-s', 'shelved')
+    shelved_changelist_numbers = {_['change'] for _ in shelved_client_results}
+    if cl_number not in shelved_changelist_numbers:
+        print("Changelist {} does not contain shelfed files\n".format(cl_number))
+        return False
+    return True
+
 def find_shelves_by_user(
     server,
     user,

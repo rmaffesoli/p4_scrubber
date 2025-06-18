@@ -10,9 +10,9 @@
         "//delete_me_stream/main"
     ],
     "clients": [
-        "delete_me_user_mafflow_main_5773",
         "delete_me_maff",
-        "delete_me_user_mafflow_dev_5963"
+        "delete_me_user_mafflow_dev_5963",
+        "delete_me_user_mafflow_main_5773"
     ],
     "shelves": [
         "174",
