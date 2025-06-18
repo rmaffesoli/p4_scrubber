@@ -2,15 +2,16 @@
     "depots": [
         "delete_me_stream"
     ],
-    "streams": [
-        "//delete_me_stream/main",
-        "//delete_me_stream/dev"
-    ],
     "users": [
         "delete_me_user"
     ],
-    "clients": [
-        "delete_me_maff"
+    "streams": [
+
     ],
-    "shelves": []
+    "clients": [
+
+    ],
+    "shelves": [
+
+    ]
 }

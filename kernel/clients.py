@@ -3,12 +3,9 @@
 from __future__ import print_function
 
 
-def find_clients_by_user(server, user, dryrun=0
-        
-):
-    # p4 clients -u USER
-    print('Not implemented')
-    return
+def find_clients_by_user(server, user):
+    client_names = {_['client'] for _ in server.run('clients', '-u', user)}
+    return client_names
 
 
 def find_clients_by_stream(server, stream):
