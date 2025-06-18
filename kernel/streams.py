@@ -41,3 +41,8 @@ if __name__ == "__main__":
     )
 
     depot = find_streams_from_depot(server=server, depot_name="delete_me_stream", dryrun=1)
+
+def delete_stream(
+        
+):
+    pass
