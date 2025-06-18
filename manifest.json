@@ -6,12 +6,42 @@
         "delete_me_user"
     ],
     "streams": [
-
+        "//delete_me_stream/dev",
+        "//delete_me_stream/main"
     ],
     "clients": [
-
+        "delete_me_user_mafflow_main_5773",
+        "delete_me_maff",
+        "delete_me_user_mafflow_dev_5963"
     ],
     "shelves": [
-
+        "174",
+        "175"
+    ],
+    "permissions": [
+        {
+            "access": "write",
+            "type": "user",
+            "name": "*",
+            "host": "*",
+            "path": "//delete_me_stream/...",
+            "comment": ""
+        },
+        {
+            "access": "write",
+            "type": "user",
+            "name": "*",
+            "host": "*",
+            "path": "//delete_me_stream/main/...",
+            "comment": ""
+        },
+        {
+            "access": "write",
+            "type": "group",
+            "name": "*",
+            "host": "*",
+            "path": "//delete_me_stream/dev/...",
+            "comment": ""
+        }
     ]
 }

@@ -4,19 +4,19 @@ from __future__ import print_function
 
 
 def find_permissions_by_depot(
-    server,
+    protections_list,
     depot
 ):
-    print("Not Implemented")
-    return
+    results = [_ for _ in protections_list if '//{}/'.format(depot) in _['path']]
+    return results
 
 
 def find_permissions_by_stream(
-    server, 
+    protections_list, 
     stream
 ):
-    print("Not Implemented")
-    return    
+    results = [_ for _ in protections_list if stream in _['path']]
+    return results
 
 
 def delete_permissions(
@@ -70,15 +70,6 @@ def validate_protection(protection):
     return True
 
 
-# def prepend_protection(protections_table, permission):
-#     if permission not in protections_table:
-#         protections_table.insert(0, permission)
-#     else:
-#         print("protection already exists in table:", permission, "\n")
-
-#     return protections_table
-
-
 def save_protections_table(protections_table, server, dryrun=0):
     protection_lines = []
     for entry in protections_table:
@@ -102,11 +93,3 @@ def save_protections_table(protections_table, server, dryrun=0):
     else:
         result = server.save_protect({"Protections": protection_lines})
         print(result[0], "\n")
-
-
-# def append_new_protections(protections, server, dryrun=0):
-#     existing_protections = get_protections_table(server)
-#     for protection in protections:
-#         if validate_protection(protection):
-#             existing_protections = prepend_protection(existing_protections, protection)
-#     save_protections_table(existing_protections, server, dryrun)
