@@ -25,41 +25,38 @@ def run_scrubber(server, manifest, dryrun=0):
         user_clients = find_clients_by_user(server, user)
         clients_to_delete = clients_to_delete.union(user_clients)
 
-        # gather shelves from users
-        
+        # gather shelves from users        
         shelves_to_delete = {_ for _ in shelves_to_delete if validate_shelve(server, _)}
         user_shelves = find_shelves_by_user(server, user)
         shelves_to_delete = shelves_to_delete.union(user_shelves)
 
-    depots_to_delete = {_ for _ in depots_to_delete if validate_depot(server, _)}
     # gather streams from depots
+    depots_to_delete = {_ for _ in depots_to_delete if validate_depot(server, _)}
     for depot in depots_to_delete:
         streams_to_delete = streams_to_delete.union(find_streams_from_depot(server, depot))
-    
-    streams_to_delete = {_ for _ in streams_to_delete if validate_stream(server, _)}
+        
     # gather clients from streams
+    streams_to_delete = {_ for _ in streams_to_delete if validate_stream(server, _)}
     for stream in streams_to_delete:
         stream_client_results = find_clients_by_stream(server, stream)
         clients_to_delete = clients_to_delete.union(stream_client_results)
 
-    clients_to_delete = {_ for _ in clients_to_delete if validate_client(server, _)}
     # gather shelves from clients
+    clients_to_delete = {_ for _ in clients_to_delete if validate_client(server, _)}
     for client in clients_to_delete:
         shelved_client_results = find_shelves_by_client(server, client)
         shelves_to_delete = shelves_to_delete.union(shelved_client_results)
 
 
     existing_protections_list = get_protections_table(server)
-    # print('existing_protections_list', existing_protections_list)
-
     permissions_to_delete = [_ for _ in permissions_to_delete if validate_permission(existing_protections_list, _)]
+
     # gather permissions from depots
     for depot in depots_to_delete:
         depot_protections = find_permissions_by_depot(existing_protections_list, depot)
         for protection in depot_protections:
             if protection not in permissions_to_delete:
                 permissions_to_delete.append(protection)
-        # print(depot, 'depot_protections', depot_protections)
 
     # gather permissions from streams
     for stream in streams_to_delete:
@@ -67,9 +64,6 @@ def run_scrubber(server, manifest, dryrun=0):
         for protection in stream_protections:
             if protection not in permissions_to_delete:
                 permissions_to_delete.append(protection)
-        # print(stream, 'stream_protections', stream_protections)
-
-
     
     manifest['users']= list(users_to_delete)
     manifest['depots']= list(depots_to_delete)

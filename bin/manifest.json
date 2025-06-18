@@ -1,0 +1,29 @@
+{
+    "depots": [
+        "delete_me_stream",
+        "some_bullshit_depot"
+    ],
+    "users": [
+        "delete_me_user",
+        "some_bullshit_user"
+    ],
+    "streams": [
+        "//some/bullshit/stream"
+    ],
+    "clients": [
+        "some_bullshit_client"
+    ],
+    "shelves": [
+        "bullshit"
+    ],
+    "permissions": [
+        {
+            "access": "write",
+            "type": "user",
+            "name": "*",
+            "host": "*",
+            "path": "//some_bullshit/...",
+            "comment": ""
+        }
+    ]
+}
