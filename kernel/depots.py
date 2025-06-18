@@ -43,6 +43,7 @@ def delete_depot(
     server, depot_name=None, dryrun=0
 ):
     """delete_depot doc string"""
+    # p4 obliterate -y ///depot/path/...
     print('Not implemented')
     return
 

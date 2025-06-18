@@ -2,15 +2,16 @@ import os
 import sys
 from argparse import ArgumentParser
 
-from PyQt6.QtWidgets import QApplication
 
-from p4templates.ui.p4_template_loader_gui import P4TemplateLoaderDialog
-from p4templates.kernel.utils import load_server_config, read_json
+from p4_scrubber.kernel.utils import load_server_config, read_json, setup_server_connection, write_json
+from p4_scrubber.kernel.scrubber import run_scrubber
+
 
 def main():
     parser = ArgumentParser()
     parser.add_argument("-c", "--config", default="./config.json")
     parser.add_argument("-m", "--manifest", default="./manifest.json")
+    parser.add_argument("-d", "--dryrun", default=1)
     parsed_args = parser.parse_args()
 
     script_dir = os.path.dirname(__file__)
@@ -36,6 +37,11 @@ def main():
 
     config = load_server_config(config_path)
     manifest = read_json(manifest_path)
+    p4_connection = setup_server_connection(**config['server'])
+    
+    updated_manifest = run_scrubber(p4_connection, manifest, parsed_args.dryrun)
+    write_json(updated_manifest, manifest_path)
+
 
 
 

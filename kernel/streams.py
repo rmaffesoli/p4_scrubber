@@ -31,7 +31,13 @@ def find_streams_from_depot(
     existing_stream_names = {_['Stream'] for _ in server.iterate_streams()}
     filtered_existing_stream_names= {_ for _ in existing_stream_names if "//{}/".format(depot_name) in _}
 
-    print(filtered_existing_stream_names)
+    return filtered_existing_stream_names
+
+
+def delete_stream(
+    # p4 stream -f --obliterate -y name@change
+):
+    pass
 
 
 if __name__ == "__main__":
@@ -42,7 +48,3 @@ if __name__ == "__main__":
 
     depot = find_streams_from_depot(server=server, depot_name="delete_me_stream", dryrun=1)
 
-def delete_stream(
-        
-):
-    pass
