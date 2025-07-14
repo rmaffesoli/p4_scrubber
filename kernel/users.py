@@ -4,7 +4,6 @@ from __future__ import print_function
 
 def validate_user(server, user_name):
     existing_user_names = {_['User'] for _ in server.iterate_users()}
-    print(existing_user_names)
     if user_name not in existing_user_names:
         print("User {} not found \n".format(user_name))
         return False

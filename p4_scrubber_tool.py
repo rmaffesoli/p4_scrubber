@@ -11,8 +11,13 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("-c", "--config", default="./config.json")
     parser.add_argument("-m", "--manifest", default="./manifest.json")
-    parser.add_argument("-d", "--dryrun", default=1)
+    parser.add_argument("-y", "--yes", default=0)
     parsed_args = parser.parse_args()
+
+    dryrun=1
+    if not parsed_args.yes:
+        print('doing it live')
+        dryrun=0
 
     script_dir = os.path.dirname(__file__)
     if getattr(sys, 'frozen', False):
@@ -39,7 +44,7 @@ def main():
     manifest = read_json(manifest_path)
     p4_connection = setup_server_connection(**config['server'])
     
-    updated_manifest = run_scrubber(p4_connection, manifest, parsed_args.dryrun)
+    updated_manifest = run_scrubber(p4_connection, manifest, dryrun)
     write_json(updated_manifest, manifest_path)
 
 

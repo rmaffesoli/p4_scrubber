@@ -44,12 +44,3 @@ def delete_stream(
 ):
     pass
 
-
-if __name__ == "__main__":
-    from utils import setup_server_connection
-    server = setup_server_connection(
-        port="ssl:helix:1666", user="rmaffesoli"
-    )
-
-    depot = find_streams_from_depot(server=server, depot_name="delete_me_stream", dryrun=1)
-

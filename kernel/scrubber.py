@@ -8,7 +8,7 @@ from p4_scrubber.kernel.streams import (validate_stream, find_streams_from_depot
 from p4_scrubber.kernel.shelves import (validate_shelve, find_shelves_by_client, find_shelves_by_user, delete_shelf)
 from p4_scrubber.kernel.users import (validate_user, delete_users)
 from p4_scrubber.kernel.clients import (validate_client, find_clients_by_user, find_clients_by_stream, delete_clients)
-from p4_scrubber.kernel.permissions import (validate_permission, find_permissions_by_depot, find_permissions_by_stream, delete_permissions, get_protections_table)
+from p4_scrubber.kernel.permissions import (validate_permission, find_permissions_by_depot, find_permissions_by_stream, get_protections_table, delete_permissions)
 
 
 def run_scrubber(server, manifest, dryrun=0):
@@ -81,6 +81,8 @@ def run_scrubber(server, manifest, dryrun=0):
         # delete_clients
         # delete_streams
         # delete_depots
+        for depot_name in manifest.get('depots', []):
+            delete_depot(server, depot_name, dryrun)
         # delete_users
         # delete permissions
 
@@ -98,4 +100,4 @@ if __name__ == "__main__":
         "streams": ["placeholder"],
     }
 
-    run_scrubber(server, manifest, dryrun=1)
+    run_scrubber(server, manifest, dryrun=0)

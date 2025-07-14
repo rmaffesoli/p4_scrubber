@@ -1,20 +1,22 @@
 {
     "depots": [
-        "delete_me_stream",
-        "some_bullshit_depot"
+        "delete_me_stream"
     ],
     "users": [
-        "delete_me_user",
-        "some_bullshit_user"
+        "delete_me_user"
     ],
     "streams": [
-        "//some/bullshit/stream"
+        "//delete_me_stream/dev",
+        "//delete_me_stream/main"
     ],
     "clients": [
-        "some_bullshit_client"
+        "delete_me_maff",
+        "delete_me_user_mafflow_main_5773",
+        "delete_me_user_mafflow_dev_5963"
     ],
     "shelves": [
-        "bullshit"
+        "175",
+        "174"
     ],
     "permissions": [
         {
@@ -22,7 +24,23 @@
             "type": "user",
             "name": "*",
             "host": "*",
-            "path": "//some_bullshit/...",
+            "path": "//delete_me_stream/...",
+            "comment": ""
+        },
+        {
+            "access": "write",
+            "type": "user",
+            "name": "*",
+            "host": "*",
+            "path": "//delete_me_stream/main/...",
+            "comment": ""
+        },
+        {
+            "access": "write",
+            "type": "group",
+            "name": "*",
+            "host": "*",
+            "path": "//delete_me_stream/dev/...",
             "comment": ""
         }
     ]

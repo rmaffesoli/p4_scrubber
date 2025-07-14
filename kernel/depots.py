@@ -35,16 +35,17 @@ def delete_depot(
     server, depot_name=None, dryrun=0
 ):
     """delete_depot doc string"""
-    # p4 obliterate -y ///depot/path/...
-    print('Not implemented')
-    return
-
-if __name__ == "__main__":
-    from utils import setup_server_connection
-    server = setup_server_connection(
-        port="ssl:helix:1666", user="rmaffesoli"
-    )
-
-    depot = find_depot(server=server, depot_name="delete_me_stream", dryrun=1)
-
+    # p4 obliterate -y //depot_path/...
+    
+    depot_path = '//{}/...'.format(depot_name)
+    
+    if not dryrun:
+        response = server.run('obliterate', '-y', '-h', depot_path)
+        print("response", response)
+        response = server.delete_depot('-f', depot_name)
+        print("response", response)
+        # print('Deleted depot:', depot_name)
+        return True
+    else:
+        print('Dry Run: would have deleted depot:', depot_name)
 
