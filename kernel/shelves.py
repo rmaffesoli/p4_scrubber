@@ -31,11 +31,22 @@ def find_shelves_by_client(
     return shelved_changelist_numbers
 
 
-def delete_shelf(
-    server, 
-    client, 
-    dryrun=0
-):
-    # p4 change -d 77
-    print("Not Implemented")
-    return
+def delete_shelf(server, shelf, dryrun=0):
+    # p4 shelve -f -d -c 77 //...
+    if dryrun:
+        result = "would have deleted shelf, {}".format(shelf) 
+    else:
+        result = server.run('shelve', '-f', '-d', '-c', shelf, '//...')
+        if isinstance(result, list):
+            result = result[0]
+    
+    print(result)
+    return result
+
+if __name__ == '__main__':
+    from utils import setup_server_connection
+    server = setup_server_connection(
+        port="ssl:helix:1666", user="rmaffesoli"
+    )
+    changelist = 174
+    delete_shelf(server, changelist, dryrun=0)

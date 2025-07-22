@@ -41,6 +41,7 @@ def delete_depot(
     
     if not dryrun:
         response = server.run('obliterate', '-y', '-h', depot_path)
+        # response = server.stream( '-o' depot_path)
         print("response", response)
         response = server.delete_depot('-f', depot_name)
         print("response", response)

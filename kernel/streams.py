@@ -39,8 +39,69 @@ def find_streams_from_depot(
     return filtered_existing_stream_names
 
 
-def delete_stream(
-    # p4 stream -f --obliterate -y name@change
-):
-    pass
+def sort_stream_tiers(server, streams_list):
+    filtered_streams_list = [_ for _ in streams_list if validate_stream(server, _)]
+    stream_sort_dict = {_:set() for _ in filtered_streams_list}
+    stream_tier_dict = {}
 
+    for stream_name in filtered_streams_list:
+        stream_spec = server.fetch_stream(stream_name)
+
+        if stream_name not in stream_sort_dict.keys():
+            stream_sort_dict[stream_name] = []
+
+        parent = stream_spec.get('Parent', None)
+
+        if parent and parent != 'none':
+            if parent in stream_sort_dict:
+                stream_sort_dict[parent].add(stream_name)
+        else: 
+            pass
+
+    while True:
+        change_made = 0
+        for parent, children in stream_sort_dict.items():
+            for child in children:
+                if stream_sort_dict[child]:
+                    initial_parent_len = len(stream_sort_dict[parent])
+                    stream_sort_dict[parent] =  stream_sort_dict[parent].union(stream_sort_dict[child])
+                    new_parent_len = len(stream_sort_dict[parent])
+                    if new_parent_len != initial_parent_len:
+                        change_made = 1
+        if not change_made:
+            break   
+    
+    for stream, children in stream_sort_dict.items():
+        num_children = len(children)
+        if not num_children in stream_tier_dict:
+            stream_tier_dict[num_children] = set()
+        stream_tier_dict[num_children].add(stream)
+
+    return stream_tier_dict
+
+
+def delete_stream(server, stream, dryrun=0):
+    # p4 stream -f --obliterate -y name@change
+    if dryrun:
+        result = "Would have deleted stream: {}".format(stream)
+    else:
+        result = server.run('stream', '-f', '--obliterate', '-y', stream)
+
+    if isinstance(result, list):
+        result = result[0]
+
+    print(result)
+    return result
+
+
+if __name__ == '__main__':
+    from utils import setup_server_connection
+    server = setup_server_connection(
+        port="ssl:helix:1666", user="rmaffesoli"
+    )
+    streams_list = [
+        "//delete_me_stream/main",
+        "//delete_me_stream/dev",
+        "//delete_me_stream/grand_child"
+    ]
+    sort_stream_tiers(server, streams_list)

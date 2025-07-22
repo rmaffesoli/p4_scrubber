@@ -14,6 +14,9 @@
         "delete_me_user_mafflow_main_5773",
         "delete_me_user_mafflow_dev_5963"
     ],
+    "groups": [
+        "delete_me_group"
+    ],
     "shelves": [
         "175",
         "174"

@@ -4,11 +4,12 @@ from __future__ import print_function
 from pprint import pprint
 
 from p4_scrubber.kernel.depots import (validate_depot, delete_depot)
-from p4_scrubber.kernel.streams import (validate_stream, find_streams_from_depot, delete_stream)
+from p4_scrubber.kernel.streams import (validate_stream, find_streams_from_depot, sort_stream_tiers, delete_stream)
 from p4_scrubber.kernel.shelves import (validate_shelve, find_shelves_by_client, find_shelves_by_user, delete_shelf)
-from p4_scrubber.kernel.users import (validate_user, delete_users)
-from p4_scrubber.kernel.clients import (validate_client, find_clients_by_user, find_clients_by_stream, delete_clients)
-from p4_scrubber.kernel.permissions import (validate_permission, find_permissions_by_depot, find_permissions_by_stream, get_protections_table, delete_permissions)
+from p4_scrubber.kernel.users import (validate_user, delete_user)
+from p4_scrubber.kernel.groups import (validate_group, delete_group)
+from p4_scrubber.kernel.clients import (validate_client, find_clients_by_user, find_clients_by_stream, delete_client)
+from p4_scrubber.kernel.permissions import (validate_permission, find_permissions_by_depot, find_permissions_by_stream, get_protections_table, delete_permission)
 
 
 def run_scrubber(server, manifest, dryrun=0):
@@ -17,6 +18,7 @@ def run_scrubber(server, manifest, dryrun=0):
     streams_to_delete = set(manifest.get("streams", []))
     clients_to_delete = set(manifest.get("clients", []))
     shelves_to_delete = set(manifest.get("shelves", []))
+    groups_to_delete = set(manifest.get("groups", []))
     permissions_to_delete = manifest.get("permissions", [])
 
     users_to_delete = {_ for _ in users_to_delete if validate_user(server, _)}
@@ -65,26 +67,49 @@ def run_scrubber(server, manifest, dryrun=0):
             if protection not in permissions_to_delete:
                 permissions_to_delete.append(protection)
     
+    groups_to_delete = {_ for _ in groups_to_delete if validate_group(server, _)}
+
     manifest['users']= list(users_to_delete)
     manifest['depots']= list(depots_to_delete)
     manifest['streams']= list(streams_to_delete)
     manifest['clients']= list(clients_to_delete)
     manifest['shelves']= list(shelves_to_delete)
+    manifest['groups']= list(groups_to_delete)
     manifest['permissions']= list(permissions_to_delete)
 
-    if dryrun:
-        pprint(manifest)
-    else:
-        pass
-        # delete the damn things
-        # delete_shelves
-        # delete_clients
-        # delete_streams
-        # delete_depots
-        for depot_name in manifest.get('depots', []):
-            delete_depot(server, depot_name, dryrun)
-        # delete_users
-        # delete permissions
+    # delete the damn things
+    
+    # delete_shelves
+    for changelist in manifest.get('shelves', []):
+        delete_shelf(server, changelist, dryrun)
+
+    # delete_clients
+    for changelist in manifest.get('clients', []):
+        delete_client(server, client, dryrun)
+
+    # delete_streams
+    stream_tier_dict = sort_stream_tiers(server, manifest.get('streams', []))
+    
+    for tier in sorted(stream_tier_dict.keys()):
+        for stream in stream_tier_dict[tier]:
+            print(tier, stream)
+            delete_stream(server, stream, dryrun)
+
+    # delete_depots
+    for depot_name in manifest.get('depots', []):
+        delete_depot(server, depot_name, dryrun)
+
+    # delete_groups
+    for group_name in manifest.get('groups', []):
+        delete_group(server, group_name, dryrun)
+    
+    # delete_users
+    for user_name in manifest.get('users', []):
+        delete_user(server, user_name, dryrun)
+    
+    # delete permissions
+    # for permission in manifest.get('permissions', []):
+    #     delete_permission(server, permission, dryrun)
 
     return manifest
 

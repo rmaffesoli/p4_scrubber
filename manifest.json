@@ -10,13 +10,13 @@
         "//delete_me_stream/dev"
     ],
     "clients": [
-        "delete_me_maff",
-        "delete_me_user_mafflow_main_5773",
-        "delete_me_user_mafflow_dev_5963"
+        "rmaffesoli_mafflow_dev_6653"
+    ],
+    "groups": [
+        "delete_me_group"
     ],
     "shelves": [
-        "174",
-        "175"
+        "201"
     ],
     "permissions": [
         {

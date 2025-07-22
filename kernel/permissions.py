@@ -27,7 +27,7 @@ def find_permissions_by_stream(
     return results
 
 
-def delete_permissions(
+def delete_permission(
     server, 
     permissions_dict, 
     permissions

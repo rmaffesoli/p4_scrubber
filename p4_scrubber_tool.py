@@ -11,11 +11,11 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("-c", "--config", default="./config.json")
     parser.add_argument("-m", "--manifest", default="./manifest.json")
-    parser.add_argument("-y", "--yes", default=0)
+    parser.add_argument("-y", "--yes", action='store_true')
     parsed_args = parser.parse_args()
 
     dryrun=1
-    if not parsed_args.yes:
+    if parsed_args.yes:
         print('doing it live')
         dryrun=0
 
@@ -46,9 +46,6 @@ def main():
     
     updated_manifest = run_scrubber(p4_connection, manifest, dryrun)
     write_json(updated_manifest, manifest_path)
-
-
-
 
 
 if __name__ == "__main__":
