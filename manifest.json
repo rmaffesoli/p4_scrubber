@@ -9,15 +9,11 @@
         "//delete_me_stream/main",
         "//delete_me_stream/dev"
     ],
-    "clients": [
-        "rmaffesoli_mafflow_dev_6653"
-    ],
+    "clients": [],
     "groups": [
         "delete_me_group"
     ],
-    "shelves": [
-        "201"
-    ],
+    "shelves": [],
     "permissions": [
         {
             "access": "write",
