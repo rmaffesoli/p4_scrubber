@@ -1,5 +1,5 @@
-#    p4templates - custom tooling to quickly create Helix Core depot/stream/group/permission setups.
-#    Copyright (C) 2024 Perforce Software, Inc.
+#    p4_scrubber - custom tooling to quickly delete Helix Core depot/stream/group/permission setups.
+#    Copyright (C) 2025 Perforce Software, Inc.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,17 +16,14 @@
 
 import pytest
 
-from p4templates.kernel.utils import (
+from p4_scrubber.kernel.utils import (
     load_server_config,
     setup_server_connection,
     set_default,
     write_json,
     read_json,
     validate_json,
-    gather_parameters,
-    substitute_parameters,
     convert_to_string,
-    gather_existing_template_names,
 )
 
 def mock_read(value):
@@ -54,8 +51,8 @@ class MockP4(object):
 
 
 def test_load_server_config(mocker):
-    m_read_json = mocker.patch("p4templates.kernel.utils.read_json")
-    m_validate_json = mocker.patch("p4templates.kernel.utils.validate_json", return_value=True)
+    m_read_json = mocker.patch("p4_scrubber.kernel.utils.read_json")
+    m_validate_json = mocker.patch("p4_scrubber.kernel.utils.validate_json", return_value=True)
 
     load_server_config("a/fake/config/path.json")
 
@@ -76,7 +73,7 @@ def test_load_server_config(mocker):
 def test_setup_server_connection(
     mocker, port, user, password, charset, connect_called, run_login_called
 ):
-    mocker.patch("p4templates.kernel.utils.P4", return_value=MockP4())
+    mocker.patch("p4_scrubber.kernel.utils.P4", return_value=MockP4())
     p4_connection = setup_server_connection(port, user, password, charset)
 
     if not connect_called and not run_login_called:
@@ -105,9 +102,9 @@ def test_set_default():
 
 def test_write_json(mocker):
     m_open = mocker.patch(
-        "p4templates.kernel.utils.open", mocker.mock_open(read_data="{'fake':'data'}")
+        "p4_scrubber.kernel.utils.open", mocker.mock_open(read_data="{'fake':'data'}")
     )
-    m_json_dump = mocker.patch("p4templates.kernel.utils.json.dump")
+    m_json_dump = mocker.patch("p4_scrubber.kernel.utils.json.dump")
 
     write_json({"fake": "data"}, "/a/fake/output/path.json")
 
@@ -123,9 +120,9 @@ def test_write_json(mocker):
 
 def test_read_json(mocker):
     m_open = mocker.patch(
-        "p4templates.kernel.utils.open", mocker.mock_open(read_data="{'fake':'data'}")
+        "p4_scrubber.kernel.utils.open", mocker.mock_open(read_data="{'fake':'data'}")
     )
-    m_json_load = mocker.patch("p4templates.kernel.utils.json.load", return_value= {'fake':'data'})
+    m_json_load = mocker.patch("p4_scrubber.kernel.utils.json.load", return_value= {'fake':'data'})
 
     read_json("/a/fake/output/path.json")
 
@@ -141,24 +138,12 @@ def test_read_json(mocker):
     ],
 )
 def test_validate_json(mocker, read_value, expected_result):
-    mocker.patch('p4templates.kernel.utils.read_json', mock_read)
+    mocker.patch('p4_scrubber.kernel.utils.read_json', mock_read)
     
     result = validate_json(read_value)
     
     assert result == expected_result
 
-
-def test_gather_parameters():
-    test_dict = {'name': r"{template}_{parameter}"}
-    result = gather_parameters(test_dict)
-    assert result == ['parameter', 'template']
-
-
-def test_substitute_parameters():
-    test_dict = {'name': r"{template}_{parameter}"}
-    test_replacements = {'template': 'all', 'parameter': 'good'}
-    result = substitute_parameters(test_dict, test_replacements)
-    assert result == {'name': "all_good"}
 
 @pytest.mark.parametrize(
         'input,expected_result',
@@ -173,16 +158,3 @@ def test_substitute_parameters():
 )
 def test_convert_to_string(input, expected_result):
     assert convert_to_string(input) == expected_result
-
-
-def test_gather_existing_template_names(mocker):
-    m_os_path_isdir = mocker.patch('p4templates.kernel.utils.os.path.isdir', return_value=True)
-    m_os_walk = mocker.patch('p4templates.kernel.utils.os.walk', return_value=[('a/fake/root/', ('a/fake/dir',), ('fake.json',)),])
-    m_read_json = mocker.patch('p4templates.kernel.utils.read_json', return_value={'name':'demo'})
-    m_validate_json = mocker.patch('p4templates.kernel.utils.validate_json', return_value=True)
-    
-    expected_result = {'demo': 'a/fake/root/fake.json'}
-
-    result = gather_existing_template_names()
-
-    assert result == expected_result

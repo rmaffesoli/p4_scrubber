@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-
-#    p4templates - custom tooling to quickly create Helix Core depot/stream/group/permission setups.
-#    Copyright (C) 2024 Perforce Software, Inc.
+#
+#    p4_scrubber - custom tooling to quickly delete Helix Core depot/stream/group/permission setups.
+#    Copyright (C) 2025 Perforce Software, Inc.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
