@@ -1,4 +1,4 @@
-# P4 Scrubber
+# P4 Scrubber [![Coverage Status](https://coveralls.io/repos/github/rmaffesoli/p4_scrubber/badge.svg?branch=main)](https://coveralls.io/github/rmaffesoli/p4_scrubber?branch=main)
 
 ## Overview
 
