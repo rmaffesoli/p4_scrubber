@@ -134,8 +134,6 @@ python ./p4_scrubber_tool -c config.json -m manifest.json -y
 * This script will attempt to upload test results to coveralls, however don't be concerned if this portion fails as it does require a private repo_token that will not be included in this github repository.
 
 ## TODO Wishlist
-- [ ] Test Coverage
-  - Currently there are no tests written for this tool at the moment.
 - [ ] Documentation
   - More than a readme is likely needed.
 - [ ] Better Reporting
