@@ -1,4 +1,4 @@
-"""shelves doc string"""
+"""groups doc string"""
 
 from __future__ import print_function
 
@@ -22,10 +22,3 @@ def delete_group(server, group, dryrun=0):
     
     print(result)
     return result
-
-
-if __name__ == '__main__':
-    from utils import setup_server_connection
-    server = setup_server_connection(port="ssl:helix:1666", user="rmaffesoli")
-    group = 'delete_me_group'
-    delete_group(server, group, dryrun=0)

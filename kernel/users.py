@@ -10,7 +10,6 @@ def validate_user(server, user_name):
     return True
 
 def delete_user(server, user, dryrun=0):
-    # p4 user -D -F -y sammy
     if dryrun:
         result = "would have deleted user, {}".format(user) 
     else:
@@ -18,14 +17,4 @@ def delete_user(server, user, dryrun=0):
         if isinstance(result, list):
             result = result[0]
     
-    print(result)
     return result
-
-if __name__ == '__main__':
-    from utils import setup_server_connection
-    server = setup_server_connection(
-        port="ssl:helix:1666", user="rmaffesoli"
-    )
-    user = 'delete_me_user'
-    delete_user(server, user, dryrun=0)
-

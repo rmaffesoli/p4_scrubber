@@ -47,16 +47,11 @@ def sort_stream_tiers(server, streams_list):
     for stream_name in filtered_streams_list:
         stream_spec = server.fetch_stream(stream_name)
 
-        if stream_name not in stream_sort_dict.keys():
-            stream_sort_dict[stream_name] = []
-
         parent = stream_spec.get('Parent', None)
 
         if parent and parent != 'none':
             if parent in stream_sort_dict:
                 stream_sort_dict[parent].add(stream_name)
-        else: 
-            pass
 
     while True:
         change_made = 0
@@ -93,15 +88,3 @@ def delete_stream(server, stream, dryrun=0):
     print(result)
     return result
 
-
-if __name__ == '__main__':
-    from utils import setup_server_connection
-    server = setup_server_connection(
-        port="ssl:helix:1666", user="rmaffesoli"
-    )
-    streams_list = [
-        "//delete_me_stream/main",
-        "//delete_me_stream/dev",
-        "//delete_me_stream/grand_child"
-    ]
-    sort_stream_tiers(server, streams_list)

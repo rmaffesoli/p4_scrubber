@@ -1,7 +1,6 @@
 """scrubber doc string"""
 
 from __future__ import print_function
-from pprint import pprint
 
 from p4_scrubber.kernel.depots import (validate_depot, delete_depot)
 from p4_scrubber.kernel.streams import (validate_stream, find_streams_from_depot, sort_stream_tiers, delete_stream)
@@ -69,13 +68,13 @@ def run_scrubber(server, manifest, dryrun=0):
     
     groups_to_delete = {_ for _ in groups_to_delete if validate_group(server, _)}
 
-    manifest['users']= list(users_to_delete)
-    manifest['depots']= list(depots_to_delete)
-    manifest['streams']= list(streams_to_delete)
-    manifest['clients']= list(clients_to_delete)
-    manifest['shelves']= list(shelves_to_delete)
-    manifest['groups']= list(groups_to_delete)
-    manifest['permissions']= list(permissions_to_delete)
+    manifest['users']= sorted(users_to_delete)
+    manifest['depots']= sorted(depots_to_delete)
+    manifest['streams']= sorted(streams_to_delete)
+    manifest['clients']= sorted(clients_to_delete)
+    manifest['shelves']= sorted(shelves_to_delete)
+    manifest['groups']= sorted(groups_to_delete)
+    manifest['permissions']= sorted(permissions_to_delete)
 
     # delete the damn things
     
@@ -84,7 +83,7 @@ def run_scrubber(server, manifest, dryrun=0):
         delete_shelf(server, changelist, dryrun)
 
     # delete_clients
-    for changelist in manifest.get('clients', []):
+    for client in manifest.get('clients', []):
         delete_client(server, client, dryrun)
 
     # delete_streams
@@ -112,17 +111,3 @@ def run_scrubber(server, manifest, dryrun=0):
     #     delete_permission(server, permission, dryrun)
 
     return manifest
-
-
-if __name__ == "__main__":
-    from utils import setup_server_connection
-    server = setup_server_connection(
-        port="ssl:helix:1666", user="rmaffesoli"
-    )
-
-    manifest = {
-        "depots": ["delete_me_stream"],
-        "streams": ["placeholder"],
-    }
-
-    run_scrubber(server, manifest, dryrun=0)

@@ -18,64 +18,68 @@
 
 import pytest
 
-from p4_scrubber.kernel.depots import validate_depot, delete_depot
+from p4_scrubber.kernel.groups import validate_group, delete_group
 
 class MockP4(object):
     def __init__(self, ):
-        self.depot = {
-            'Depot': 'Existing',
-            'Type': 'stream',
-            'StreamDepth': '//Existing/1'
+        self.group = {
+            'Group': 'Existing',
+            'Description': None,
+            'MaxResults': None,
+            'MaxScanRows': None,
+            'MaxLockTime': None,
+            'MaxOpenFiles': None,
+            'MaxMemory': None,
+            'Timeout': None,
+            'PasswordTimeout': None,
+            'Subgroups': None,
+            'Owners': None,
+            'Users': None,
         }
 
-        self.run_args = ()
-        self.delete_depot_args = ()
-        self.run_called = 0
-        self.iterate_called = 0
-        self.delete_depot_called = 0 
 
-    def iterate_depots(self):
+        self.run_args = ()
+        self.iterate_called = 0
+        self.run_called = 0
+
+    def iterate_groups(self):
         self.iterate_called = 1
-        return [self.depot]
+        return [self.group]
 
     def run(self, *args):
         self.run_called = 1
         self.run_args = args
-
-    def delete_depot(self, *args):
-        self.delete_depot_called = 1 
-        self.delete_depot_args = args
+        return [True]
 
 
 @pytest.mark.parametrize(
-    'depot_name,iterate_called,expected_result',
+    'group_name,iterate_called,expected_result',
     [
-        ('test_depot', True, False),
-        ('Existing', True, True),
+        ('Existing', 1, True),
+        ('no_group', 1, False),
     ]
 )
-def test_validate_depot(depot_name, iterate_called, expected_result):
+def test_validate_group(group_name, iterate_called, expected_result):
     m_server = MockP4()
 
-    result = validate_depot(m_server, depot_name)
+    result = validate_group(m_server, group_name)
 
     assert result == expected_result
     assert m_server.iterate_called == iterate_called
 
+
 @pytest.mark.parametrize(
-    'dryrun,expected_result,run_called,expected_run_args,delete_called,expected_delete_args',
+    'group_name,dryrun,run_called,expected_run_args,expected_result',
     [
-        (True, None, 0, (), 0, ()),
-        (False, True, 1, ('obliterate', '-y', '-h', '//Existing/...'), 1, ('-f', 'Existing')),
+        ('Existing', 1, False, (), 'would have deleted group, Existing'),
+        ('Existing', 0, True, ('group', '-d', '-F', 'Existing'), True),
     ]
 )
-def test_delete_depot(dryrun, expected_result, run_called, expected_run_args, delete_called, expected_delete_args):
+def test_delete_group(group_name, dryrun, run_called, expected_run_args, expected_result):
     m_server = MockP4()
 
-    result = delete_depot(m_server,'Existing', dryrun)
-    print(m_server.run_args)
+    result = delete_group(m_server, group_name, dryrun)
+
     assert result == expected_result
-    assert m_server.run_called == run_called
     assert m_server.run_args == expected_run_args
-    assert m_server.delete_depot_called == delete_called
-    assert m_server.delete_depot_args == expected_delete_args
+    assert m_server.run_called == run_called

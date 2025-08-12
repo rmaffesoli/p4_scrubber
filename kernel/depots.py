@@ -49,4 +49,3 @@ def delete_depot(
         return True
     else:
         print('Dry Run: would have deleted depot:', depot_name)
-
