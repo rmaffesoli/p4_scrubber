@@ -6,7 +6,7 @@ This P4 Scrubber Tool can be used to quickly remove depots, streams, users, grou
 
 * Who Is the P4 Scrubber Tool for? 
 
-  * Admins of enviroments that need to quickly and easily remove large quanities of content and setup from their P4 Environment. This tool was built with Educational institutions in mind first an dforemost. At the end of a semester there is often a need to regain storage space assigned to users for a limited ammount if time. 
+  * Admins of enviroments that need to quickly and easily remove large quanities of content and setup from their P4 Environment. This tool was built with Educational institutions in mind first and foremost. At the end of a semester there is often a need to regain storage space assigned to users for a limited ammount if time. 
 
 
 
