@@ -11,6 +11,7 @@ def validate_permission(
         return False
     return True
 
+
 def find_permissions_by_depot(
     protections_list,
     depot
@@ -28,13 +29,14 @@ def find_permissions_by_stream(
 
 
 def delete_permission(
-    server, 
-    permissions_dict, 
-    permissions
+    protections_table, 
+    permission,
 ):
 
-    print("Not Implemented")
-    return
+    if permission in protections_table:
+        protections_table.remove(permission)
+        print("Deleted permission: {}".format(permission))
+    return protections_table
 
 
 def get_protections_table(server):

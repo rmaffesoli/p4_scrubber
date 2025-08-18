@@ -1,6 +1,7 @@
 """scrubber doc string"""
 
 from __future__ import print_function
+from operator import itemgetter
 
 from p4_scrubber.kernel.depots import (validate_depot, delete_depot)
 from p4_scrubber.kernel.streams import (validate_stream, find_streams_from_depot, sort_stream_tiers, delete_stream)
@@ -8,7 +9,7 @@ from p4_scrubber.kernel.shelves import (validate_shelve, find_shelves_by_client,
 from p4_scrubber.kernel.users import (validate_user, delete_user)
 from p4_scrubber.kernel.groups import (validate_group, delete_group)
 from p4_scrubber.kernel.clients import (validate_client, find_clients_by_user, find_clients_by_stream, delete_client)
-from p4_scrubber.kernel.permissions import (validate_permission, find_permissions_by_depot, find_permissions_by_stream, get_protections_table, delete_permission)
+from p4_scrubber.kernel.permissions import (validate_permission, find_permissions_by_depot, find_permissions_by_stream, get_protections_table, delete_permission,save_protections_table)
 
 
 def run_scrubber(server, manifest, dryrun=0):
@@ -74,7 +75,7 @@ def run_scrubber(server, manifest, dryrun=0):
     manifest['clients']= sorted(clients_to_delete)
     manifest['shelves']= sorted(shelves_to_delete)
     manifest['groups']= sorted(groups_to_delete)
-    manifest['permissions']= sorted(permissions_to_delete)
+    manifest['permissions']= sorted(permissions_to_delete, key=itemgetter('name'))
 
     # delete the damn things
     
@@ -107,7 +108,8 @@ def run_scrubber(server, manifest, dryrun=0):
         delete_user(server, user_name, dryrun)
     
     # delete permissions
-    # for permission in manifest.get('permissions', []):
-    #     delete_permission(server, permission, dryrun)
+    for permission in manifest.get('permissions', []):
+        existing_protections_list = delete_permission(existing_protections_list, permission)
+    save_protections_table(existing_protections_list, server, dryrun)
 
     return manifest

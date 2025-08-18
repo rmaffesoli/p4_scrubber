@@ -16,12 +16,15 @@
 
 import pytest
 
-from p4templates.kernel.edit_permissions import (
+from p4_scrubber.kernel.permissions import (
+    validate_permission,
+    find_permissions_by_depot,
+    find_permissions_by_stream,
+    delete_permission,
     get_protections_table,
     validate_protection,
-    prepend_protection,
     save_protections_table,
-    append_new_protections,
+
 )
 
 
@@ -91,20 +94,6 @@ def test_validate_protection(protection, expected_result):
     assert result == expected_result
 
 
-def test_prepend_protection():
-    protection = 'protection'
-    protection_table = ['existing']
-    expected_result = ['protection', 'existing']
-
-    result = prepend_protection(protection_table, protection)
-
-    assert result == expected_result
-
-    result = prepend_protection(protection_table, protection)
-
-    assert result == expected_result
-
-
 @pytest.mark.parametrize(
     "protection_table,dryrun,expected_result",
     [
@@ -143,19 +132,47 @@ def test_save_protections_table(protection_table, dryrun, expected_result):
 
     assert m_server.protect == expected_result
 
+@pytest.mark.parametrize(
+    "protection_list,protection,expected_result",
+    [
+        (
+            ['test_protection'],
+            'test_protection',
+            True
+        ),
+        (
+            ['nope_protection'],
+            'test_protection',
+            False
+        ),
+    ]
+)
+def test_validate_permission(protection_list, protection, expected_result):
+   result = validate_permission(protection_list, protection)
+   assert result == expected_result
 
-def test_append_new_protections(mocker):
-    m_server = MockP4()
-    m_get_protections_table = mocker.patch('p4templates.kernel.edit_permissions.get_protections_table', return_value='existing_protection')
-    m_validate_protection = mocker.patch('p4templates.kernel.edit_permissions.validate_protection', return_value=True)
-    m_prepend_protection = mocker.patch('p4templates.kernel.edit_permissions.prepend_protection', return_value=['existing_protection', 'new_protection'])
-    m_save_protections_table = mocker.patch('p4templates.kernel.edit_permissions.save_protections_table')
 
-    new_protections = ['new_protection']
+def test_find_permissions_by_depot():
+    protection_list = [{'name':'yes', 'path':'//test_depot/...'},{'name': 'no', 'path':'//nope/...'}]
+    expected_result = [{'name':'yes', 'path':'//test_depot/...'},]
+    
+    result = find_permissions_by_depot(protection_list, 'test_depot')
+    
+    assert result == expected_result
 
-    append_new_protections(new_protections, m_server)
 
-    m_get_protections_table.assert_called_once_with(m_server)
-    m_validate_protection.assert_called_once_with(new_protections[0])
-    m_prepend_protection.assert_called_once_with(m_get_protections_table.return_value, new_protections[0])
-    m_save_protections_table.assert_called_once_with(m_prepend_protection.return_value, m_server, 0)
+def test_find_permissions_by_stream():
+    protection_list = [{'name':'yes', 'path':'//test_depot/main...'},{'name': 'no', 'path':'//nope/main...'}]
+    expected_result = [{'name':'yes', 'path':'//test_depot/main...'},]
+    
+    result = find_permissions_by_stream(protection_list, '//test_depot/main')
+    
+    assert result == expected_result
+
+def test_delete_permission():
+    protection_list = [{'name':'yes'},{'name': 'no'}]
+    expected_result = [{'name':'no'},]
+    
+    result = delete_permission(protection_list, {'name':'yes'})
+    
+    assert result == expected_result
